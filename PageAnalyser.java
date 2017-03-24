@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 public class PageAnalyser {
 	final static String templateUrl = "https://cn.vjudge.net/problem/description/";
-	
+	private String inFileContent;
 	public String getHtmlContent(String htmlurl) {   //获取原网页内容
 		URL url;
 		URLConnection urlCon;
@@ -84,22 +84,34 @@ public class PageAnalyser {
 	private char getCate(String s) {
 		return s.charAt(s.length()-1);
 	}
+	
+	public String getInFileContent(){
+		return inFileContent;
+	}
+	
+	private String html2String(String s) {
+		String result = ((s.replaceAll("\\\\u003c", "")).replaceAll("\\\\u003e", "")).replaceAll("\\\\r\\\\n", "\n\r");
+		return result;
+	}
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public PageAnalyser(String url) {
 		// TODO Auto-generated method stub
-		PageAnalyser pa = new PageAnalyser();
-		String htmlUrl = "https://cn.vjudge.net/contest/154511#problem/D";
-		char proCate = pa.getCate(htmlUrl);
-		String pageContent = pa.getHtmlContent(htmlUrl);
-		List<String> publicDescId = pa.getPublicDescId(pageContent);
-		String decriUrl = PageAnalyser.templateUrl + pa.getIndexByUrl(proCate, publicDescId);
-		String decriContent = pa.getHtmlContent(decriUrl);
-		String inFileContent = pa.getSampleInput(decriContent);
+		//PageAnalyser pa = new PageAnalyser();
+		String htmlUrl = url;//"https://cn.vjudge.net/contest/155180#problem/A";
+		char proCate = getCate(htmlUrl);
+		String pageContent = getHtmlContent(htmlUrl);
+		List<String> publicDescId = getPublicDescId(pageContent);
+		String decriUrl = PageAnalyser.templateUrl + getIndexByUrl(proCate, publicDescId);
+		String decriContent = getHtmlContent(decriUrl);
+		inFileContent = html2String(getSampleInput(decriContent));
 		//System.out.println(pa.getSampleInput(content));
 		//System.out.println(pa.getPublicDescId(pageContent));
-		System.out.println(inFileContent);
+		//System.out.println(inFileContent);
+		
 	}
-
 }
+
+//只能处理input是sample input 的题目
+
